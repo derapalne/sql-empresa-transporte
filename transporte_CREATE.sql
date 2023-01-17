@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     apellido_usuario VARCHAR(30) NOT NULL,
     dni_usuario VARCHAR(15) NOT NULL,
     email_usuario VARCHAR(50) NOT NULL UNIQUE,
+    password_usuario VARCHAR(50) NOT NULL,
     telefono_usuario VARCHAR(15) NOT NULL
 );
 
@@ -646,6 +647,15 @@ CREATE OR REPLACE VIEW usuarios_deudores_view AS
 	SELECT u.id_usuario ,u.nombre_usuario, u.apellido_usuario, f.id_factura, f.estado_factura, f.total_factura
     FROM factura f JOIN usuario u ON f.id_usuario=u.id_usuario
     WHERE f.estado_factura NOT LIKE "PAGA";
+    
+-- toda la info de todos los paquetes
+CREATE OR REPLACE VIEW paquetes_view AS
+	SELECT p.*, o.id_estacion as id_estacion_origen, d.id_estacion as id_estacion_destino, 
+		   f.fecha_carga, f.fecha_salida, f.fecha_llegada
+	FROM paquete p
+    JOIN origen_paquete o ON p.id_paquete=o.id_paquete
+    JOIN destino_paquete d ON p.id_paquete=d.id_paquete
+    JOIN fechas_paquete f ON f.id_paquete=p.id_paquete;
 
 -- creacion de TRIGGERS
 
