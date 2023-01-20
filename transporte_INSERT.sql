@@ -229,7 +229,7 @@ VALUES (1,4,3,3,0.90,"ENTREGADO");
 INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
 VALUES (2,1,2,2,1.20,"ENTREGADO");
 INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (2,1,2,2,3.57,"ENTREGADO");
+VALUES (2,1,2,2,3.57,"ESPERANDO RECEPCION");
 INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
 VALUES (3,5,1,1,2.22,"ENTREGADO");
 INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
@@ -257,16 +257,16 @@ CALL agregar_paquete(3, 0.78, 8, 11, @response, @new_id_paquete);
 CALL agregar_paquete(6, 9.60, 13, 3, @response, @new_id_paquete);
 CALL agregar_paquete(11, 15.45, 1, 9, @response, @new_id_paquete);
 CALL agregar_paquete(9, 13.59, 6, 7, @response, @new_id_paquete);
-CALL modificar_estado_paquete(10,"ENTREGADO");
-CALL modificar_estado_paquete(11,"ENTREGADO");
-CALL modificar_estado_paquete(12,"ENTREGADO");
-CALL modificar_estado_paquete(13,"DEMORADO");
-CALL modificar_estado_paquete(14,"ENTREGADO");
-CALL modificar_estado_paquete(15,"ENTREGADO");
-CALL modificar_estado_paquete(17,"DEMORADO");
-CALL modificar_estado_paquete(18,"ENTREGADO");
-CALL modificar_estado_paquete(19,"ENTREGADO");
-CALL modificar_estado_paquete(20,"ENTREGADO");
+CALL modificar_estado_paquete(10,"ENTREGADO",@response);
+CALL modificar_estado_paquete(11,"ESPERANDO RECEPCION",@response);
+CALL modificar_estado_paquete(12,"ENTREGADO",@response);
+CALL modificar_estado_paquete(13,"DEMORADO",@response);
+CALL modificar_estado_paquete(14,"ENTREGADO",@response);
+CALL modificar_estado_paquete(15,"ENTREGADO",@response);
+CALL modificar_estado_paquete(17,"DEMORADO",@response);
+CALL modificar_estado_paquete(18,"ENTREGADO",@response);
+CALL modificar_estado_paquete(19,"ENTREGADO",@response);
+CALL modificar_estado_paquete(20,"ENTREGADO",@response);
 CALL agregar_datos_a_paquete(10, 5, 10, 5, '2023-11-15', '2023-11-17', @response);
 CALL agregar_datos_a_paquete(11, 6, 8, 6, '2023-11-16', '2023-11-19', @response);
 CALL agregar_datos_a_paquete(12, 7, 5, 7, '2023-11-17', '2023-11-20', @response);
@@ -302,23 +302,23 @@ VALUES (9,"2022-08-25");
 
 -- tabla ORIGEN_PAQUETE
 INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (1,3);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (2,3);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (3,3);
+INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (2,10);
+INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (3,11);
 INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (4,1);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (5,2);
+INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (5,7);
 INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (6,2);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (7,4);
+INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (7,9);
 INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (8,4);
 INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (9,3);
 
 
 -- tabla DESTINO_PAQUETE
 INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (1,4);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (2,2);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (3,2);
+INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (2,10);
+INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (3,11);
 INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (4,3);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (5,1);
+INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (5,8);
 INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (6,1);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (7,1);
+INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (7,6);
 INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (8,2);
 INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (9,1);

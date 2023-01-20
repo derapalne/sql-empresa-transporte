@@ -22,6 +22,15 @@ CREATE TABLE IF NOT EXISTS estacion (
     estado_estacion VARCHAR(30) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS estadistica_estacion (
+	id_estadistica INT NOT NULL primary key auto_increment,
+    id_estacion INT NOT NULL,
+    pqt_esperando INT NOT NULL DEFAULT 0,
+    pqt_despachados INT NOT NULL DEFAULT 0,
+	pqt_recibidos INT NOT NULL DEFAULT 0,
+    pqt_entregados INT NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS vehiculo (
 	id_vehiculo INT NOT NULL primary key auto_increment,
     capacidad_vehiculo decimal(9,2) NOT NULL,
@@ -117,11 +126,18 @@ CREATE TABLE IF NOT EXISTS logs_paquete (
     db VARCHAR(100) NOT NULL,
     usuario VARCHAR(100) NOT NULL
 );
+
 -- Alterar tablas
 
 ALTER TABLE vehiculo
 		ADD CONSTRAINT fk_id_estacion_actual
 	FOREIGN KEY (id_estacion_actual) REFERENCES estacion(id_estacion)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+    
+ALTER TABLE estadistica_estacion
+		ADD CONSTRAINT fk_id_estacion
+	FOREIGN KEY (id_estacion) REFERENCES estacion(id_estacion)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
     
@@ -157,7 +173,7 @@ ALTER TABLE transporte
     
 ALTER TABLE transporte
 		ADD CONSTRAINT fk_id_estacion_destino_transporte
-	FOREIGN KEY (id_estacion_origen) REFERENCES estacion(id_estacion)
+	FOREIGN KEY (id_estacion_destino) REFERENCES estacion(id_estacion)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
@@ -558,25 +574,68 @@ END$$
 DROP PROCEDURE IF EXISTS `modificar_estado_paquete`$$
 CREATE PROCEDURE `modificar_estado_paquete` (
 	IN in_id_paquete INT,
-    IN in_estado_paquete VARCHAR(20)
+    IN in_estado_paquete VARCHAR(20),
+    OUT response VARCHAR(50)
 )
 sp: BEGIN
 	DECLARE id_paquete_encontrado INT;
+    DECLARE estado_anterior_paquete VARCHAR(30);
+    DECLARE origen_campo_actualizar VARCHAR(100);
+    DECLARE destino_campo_actualizar VARCHAR(100);
+    -- REALIZAR VALIDACIÓN DE DATOS INTRODUCIDOS
     IF in_estado_paquete <> "ESPERANDO TRANSPORTE"
     AND in_estado_paquete <> "EN CAMINO"
     AND in_estado_paquete <> "DEMORADO"
     AND in_estado_paquete <> "ESPERANDO RECEPCION"
     AND in_estado_paquete <> "ENTREGADO" THEN
-		SELECT CONCAT("Proporcione un estado válido: ", in_estado_paquete, " no pertenece a las opciones aceptadas") AS response;
+		SET response =  CONCAT("Proporcione un estado válido: ", in_estado_paquete, " no pertenece a las opciones aceptadas");
         LEAVE sp;
     END IF;
-    SET id_paquete_encontrado = (SELECT id_paquete FROM paquete WHERE paquete.id_paquete=in_id_paquete);
+    -- VERIFICAR LA EXISTENCIA DEL PAQUETE
+    SET id_paquete_encontrado = (SELECT id_paquete FROM paquete WHERE paquete.id_paquete=in_id_paquete LIMIT 1);
     IF id_paquete_encontrado IS NULL THEN
-		SELECT CONCAT("El paquete no ha sido encontrado. Id: ", in_id_paquete) AS response;
+		SET response =  CONCAT("El paquete no ha sido encontrado. Id: ", in_id_paquete);
         LEAVE sp;
     END IF;
+    SET estado_anterior_paquete = (SELECT estado_paquete FROM paquete WHERE paquete.id_paquete=in_id_paquete LIMIT 1);
+    -- REALIZAR LA ACTUALIZACIÓN EN LA TABLA PAQUETE
     UPDATE paquete SET paquete.estado_paquete = in_estado_paquete WHERE paquete.id_paquete=in_id_paquete;
-    SELECT CONCAT("Paquete actualizado exitosamente. Id: ", in_id_paquete) AS response;
+    -- ACTUALIZAR LAS ESTADÍSTICAS DE LAS ESTACIONES
+    IF in_estado_paquete = "ESPERANDO TRANSPORTE" THEN
+		SET origen_campo_actualizar = "pqt_esperando = pqt_esperando + 1";
+    END IF;
+    IF in_estado_paquete = "EN CAMINO" OR in_estado_paquete = "DEMORADO" THEN
+		IF estado_anterior_paquete = "ESPERANDO TRANSPORTE" THEN
+			SET origen_campo_actualizar = "pqt_esperando = pqt_esperando - 1, pqt_despachados = pqt_despachados + 1";
+        END IF;
+    END IF;
+    IF in_estado_paquete = "ESPERANDO RECEPCION" THEN
+		SET destino_campo_actualizar = "pqt_recibidos = pqt_recibidos + 1";
+    END IF;
+    IF in_estado_paquete = "ENTREGADO" THEN
+		IF estado_anterior_paquete = "ESPERANDO RECEPCION" THEN
+			SET destino_campo_actualizar = "pqt_recibidos = pqt_recibidos - 1, pqt_entregados = pqt_entregados + 1";
+		ELSE 
+			SET destino_campo_actualizar = "pqt_entregados = pqt_entregados + 1";
+        END IF;
+    END IF;
+    SET @sentencia_update_est_origen = CONCAT(
+    "WITH origen (origen) 
+		AS (
+			SELECT id_estacion as origen
+            FROM origen_paquete 
+            WHERE id_paquete=in_id_paquete 
+        )
+        UPDATE estadistica_estacion SET", origen_campo_actualizar); 
+    SET response = CONCAT("Paquete actualizado exitosamente. Id: ", in_id_paquete);
+END$$
+
+DROP PROCEDURE IF EXISTS `get_top_estaciones`$$
+CREATE PROCEDURE `get_top_estaciones` (
+	IN tipo_estacion CHAR(3)
+)
+BEGIN
+	DECLARE done BOOLEAN DEFAULT FALSE;
 END$$
 
 
