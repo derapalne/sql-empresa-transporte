@@ -392,6 +392,7 @@ sp: BEGIN
 	INSERT INTO origen_paquete (id_paquete, id_estacion) VALUES (new_paquete_id, id_estacion_origen);
     INSERT INTO destino_paquete (id_paquete, id_estacion) VALUES (new_paquete_id, id_estacion_destino);
     INSERT INTO fechas_paquete (id_paquete, fecha_carga) VALUES (new_paquete_id, CURDATE());
+    UPDATE estadistica_estacion SET pqt_esperando = pqt_esperando + 1 WHERE id_estacion=id_estacion_origen;
     -- responder exitosamente
     SET response = CONCAT("Paquete insertado exitosamente");
     SET new_id_paquete = new_paquete_id;
@@ -583,11 +584,13 @@ sp: BEGIN
     DECLARE origen_campo_actualizar VARCHAR(100);
     DECLARE destino_campo_actualizar VARCHAR(100);
     -- REALIZAR VALIDACIÓN DE DATOS INTRODUCIDOS
-    IF in_estado_paquete <> "ESPERANDO TRANSPORTE"
-    AND in_estado_paquete <> "EN CAMINO"
-    AND in_estado_paquete <> "DEMORADO"
-    AND in_estado_paquete <> "ESPERANDO RECEPCION"
-    AND in_estado_paquete <> "ENTREGADO" THEN
+    IF in_estado_paquete NOT IN (
+		"ESPERANDO TRANSPORTE",
+		"EN CAMINO",
+		"DEMORADO",
+		"ESPERANDO RECEPCION",
+		"ENTREGADO"
+	) THEN
 		SET response =  CONCAT("Proporcione un estado válido: ", in_estado_paquete, " no pertenece a las opciones aceptadas");
         LEAVE sp;
     END IF;
@@ -610,23 +613,46 @@ sp: BEGIN
         END IF;
     END IF;
     IF in_estado_paquete = "ESPERANDO RECEPCION" THEN
+		IF estado_anterior_paquete = "ESPERANDO TRANSPORTE" THEN
+			SET origen_campo_actualizar = "pqt_esperando = pqt_esperando - 1, pqt_despachados = pqt_despachados + 1";
+        END IF;
 		SET destino_campo_actualizar = "pqt_recibidos = pqt_recibidos + 1";
     END IF;
     IF in_estado_paquete = "ENTREGADO" THEN
+		IF estado_anterior_paquete = "ESPERANDO TRANSPORTE" THEN
+			SET origen_campo_actualizar = "pqt_esperando = pqt_esperando - 1, pqt_despachados = pqt_despachados + 1";
+        END IF;
 		IF estado_anterior_paquete = "ESPERANDO RECEPCION" THEN
 			SET destino_campo_actualizar = "pqt_recibidos = pqt_recibidos - 1, pqt_entregados = pqt_entregados + 1";
 		ELSE 
 			SET destino_campo_actualizar = "pqt_entregados = pqt_entregados + 1";
         END IF;
     END IF;
-    SET @sentencia_update_est_origen = CONCAT(
-    "WITH origen (origen) 
-		AS (
-			SELECT id_estacion as origen
-            FROM origen_paquete 
-            WHERE id_paquete=in_id_paquete 
-        )
-        UPDATE estadistica_estacion SET", origen_campo_actualizar); 
+	-- PREPARAR LA SENTENCIA DE ESTADISTICAS DE ORIGEN    
+    IF origen_campo_actualizar IS NOT NULL THEN
+		SET @sentencia_update_est_origen = CONCAT(
+		"UPDATE estadistica_estacion SET ", origen_campo_actualizar, " WHERE id_estacion=(
+				SELECT id_estacion AS origen
+				FROM origen_paquete 
+				WHERE id_paquete=", in_id_paquete, " LIMIT 1)");
+		PREPARE sentencia_origen FROM @sentencia_update_est_origen;
+		EXECUTE sentencia_origen;
+		DEALLOCATE PREPARE sentencia_origen;
+    END IF;
+
+    -- PREPARAR LA SENTENCIA DE ESTADISTICAS DE DESTINO
+	IF destino_campo_actualizar IS NOT NULL THEN
+		SET @sentencia_update_est_destino = CONCAT(
+		"UPDATE estadistica_estacion SET ", destino_campo_actualizar, " WHERE id_estacion=(
+				SELECT id_estacion AS destino
+				FROM destino_paquete 
+				WHERE id_paquete=", in_id_paquete, " LIMIT 1
+			)");
+		PREPARE sentencia_destino FROM @sentencia_update_est_destino;
+		EXECUTE sentencia_destino;
+		DEALLOCATE PREPARE sentencia_destino;
+    END IF;
+    
     SET response = CONCAT("Paquete actualizado exitosamente. Id: ", in_id_paquete);
 END$$
 
@@ -638,6 +664,128 @@ BEGIN
 	DECLARE done BOOLEAN DEFAULT FALSE;
 END$$
 
+DROP PROCEDURE IF EXISTS `crear_factura_validacion`$$
+CREATE PROCEDURE `crear_factura_validacion` (
+	IN in_id_usuario_remitente INT,
+	IN in_id_transporte INT,
+    OUT response VARCHAR(100)
+)
+sp: BEGIN
+	DECLARE id_usuario_encontrado INT;
+    DECLARE id_transporte_encontrado INT;
+    DECLARE id_factura_encontrada INT;
+    DECLARE id_paquete_encontrado INT;
+    -- validar existencia del usuario
+    SET id_usuario_encontrado = (SELECT id_usuario FROM usuario WHERE id_usuario=in_id_usuario_remitente LIMIT 1);
+    IF id_usuario_encontrado IS NULL THEN
+		SET response = "Usuario no encontrado";
+        LEAVE sp;
+    END IF;
+    -- validar existencia del transporte
+    SET id_transporte_encontrado = (SELECT id_transporte FROM transporte WHERE id_transporte=in_id_transporte LIMIT 1);
+	IF id_transporte_encontrado IS NULL THEN
+		SET response = "Transporte no encontrado";
+        LEAVE sp;
+    END IF;
+    -- validar la ausencia de una factura asociada a ese usuario y transporte
+    SET id_factura_encontrada = (SELECT id_factura FROM factura WHERE id_usuario=in_id_usuario_remitente AND id_transporte=in_id_transporte LIMIT 1);
+    IF id_factura_encontrada IS NOT NULL THEN
+		SET response = "Factura existente";
+        LEAVE sp;
+    END IF;
+    -- validar la existencia de paquetes a agregar
+    SET id_paquete_encontrado = (SELECT id_paquete FROM paquete WHERE id_usuario_remitente=in_id_usuario_remitente AND id_transporte=in_id_transporte LIMIT 1);
+    IF id_paquete_encontrado IS NULL THEN
+		SET response = CONCAT("No hay paquetes que agregar", id_usuario_encontrado, " ", id_transporte_encontrado );
+        LEAVE sp;
+    END IF;
+    SET response = "OK";
+END$$
+
+DROP PROCEDURE IF EXISTS `crear_factura_creacion`$$
+CREATE PROCEDURE `crear_factura_creacion` (
+	IN in_id_usuario_remitente INT,
+	IN in_id_transporte INT,
+    OUT response VARCHAR(100)
+)
+sp: BEGIN
+    DECLARE id_factura_generada INT;
+    DECLARE peso_total DECIMAL(9,2);
+    DECLARE costo_por_kilo DECIMAL(5,2);
+	SET costo_por_kilo = 190.00;
+	-- TRAER EL TOTAL DE LOS PAQUETES
+    SELECT SUM(peso_paquete) INTO peso_total FROM paquete WHERE id_usuario_remitente=in_id_usuario_remitente AND id_transporte=in_id_transporte;
+    -- CREAR FACTURA
+    INSERT INTO factura (id_transporte, id_usuario, total_factura, estado_factura, fecha_factura)
+    VALUES (in_id_transporte, in_id_usuario_remitente, 0.00,"GENERADA", CURDATE());
+    -- VERIFICAR EXISTENCIA DE FACTURA
+    SET id_factura_generada = (SELECT id_factura FROM factura WHERE id_usuario=in_id_usuario_remitente AND id_transporte=in_id_transporte);
+    IF id_factura_generada IS NULL THEN
+		SET response = "Error al generar factura";
+        LEAVE sp;
+    END IF;
+	-- ACTUALIZAR FACTURA CON TOTAL
+    UPDATE factura SET total_factura = (peso_total*costo_por_kilo) WHERE id_factura = id_factura_generada;
+    -- ACTUALIZAR PAQUETES CON FACTURA
+	UPDATE paquete SET id_factura = id_factura_generada WHERE id_usuario_remitente=in_id_usuario_remitente AND id_transporte=in_id_transporte;
+    
+    SET response = "OK";
+END$$
+
+DROP PROCEDURE IF EXISTS `crear_factura`$$
+CREATE PROCEDURE `crear_factura` (
+	IN in_id_usuario_remitente INT,
+	IN in_id_transporte INT,
+    OUT response VARCHAR(100)
+)
+sp: BEGIN
+	-- validar facturas
+	SET @sub_response = "";
+    CALL crear_factura_validacion(in_id_usuario_remitente, in_id_transporte, @sub_response);
+    IF @sub_response <> "OK" THEN
+		SET response = @sub_response;
+        LEAVE sp;
+    END IF;
+    -- crear facturas
+    CALL crear_factura_creacion(in_id_usuario_remitente, in_id_transporte, @sub_response);
+    IF @sub_response <> "OK" THEN
+		SET response = @sub_response;
+        LEAVE sp;
+    END IF;
+    SET response = "Factura creada exitosamente";
+END$$
+
+DROP PROCEDURE IF EXISTS `modificar_estado_factura`$$
+CREATE PROCEDURE `modificar_estado_factura` (
+	IN in_id_factura INT,
+    IN in_estado_factura VARCHAR(15),
+    OUT response VARCHAR(50)
+)
+sp: BEGIN
+	DECLARE id_factura_encontrada INT;
+	DECLARE estado_anterior_factura VARCHAR(15);
+	IF in_estado_factura NOT IN (
+		"CANCELADA",
+        "PAGA"
+    ) THEN
+		SET response = "Estado de factura inválido";
+        LEAVE sp;
+    END IF;
+    
+    SET id_factura_encontrada = (SELECT id_factura FROM factura WHERE id_factura=in_id_factura LIMIT 1);
+    IF id_factura_encontrada IS NULL THEN
+		SET response = "Factura no encontrada";
+        LEAVE sp;
+    END IF;
+    
+    SET estado_anterior_factura = (SELECT estado_factura FROM factura WHERE id_factura=in_id_factura LIMIT 1);
+    IF estado_anterior_factura IN ("PAGA", "CANCELADA") THEN
+		SET response = CONCAT("No se puede cambiar el estado de esta factura: ", estado_anterior_factura);
+        LEAVE sp;
+    END IF;
+    UPDATE factura SET estado_factura = in_estado_factura WHERE id_factura=in_id_factura;
+    SET response = "Estado de la factura actualizado con éxito";
+END$$
 
 /*
 DROP PROCEDURE IF EXISTS ``$$
@@ -919,6 +1067,13 @@ BEGIN
     THEN 
 		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Fecha de salida o llegada inválida";
     END IF;
+END$$
+
+DROP TRIGGER IF EXISTS `after_insert_estacion`$$
+CREATE TRIGGER `after_insert_estacion` AFTER INSERT ON `estacion`
+FOR EACH ROW
+BEGIN
+    INSERT INTO estadistica_estacion (id_estacion) VALUES (NEW.id_estacion);
 END$$
 
 DELIMITER ;

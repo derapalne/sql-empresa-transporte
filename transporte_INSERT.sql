@@ -166,86 +166,69 @@ VALUES (5,2,"14:05:36","22:03:55","2022-04-28");
 
 -- tabla TRANSPORTE
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (1,3,2,"2022-03-24","2022-03-26");
+VALUES (2,1,2,"2022-03-24","2022-03-26");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (3,2,2,"2022-03-27","2022-03-29");
+VALUES (8,11,2,"2022-03-27","2022-03-29");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (3,4,3,"2022-03-23","2022-03-25");
+VALUES (10,3,3,"2022-03-23","2022-03-25");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (4,2,1,"2022-04-05","2022-04-07");
+VALUES (11,13,1,"2022-04-05","2022-04-07");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (2,1,2,"2022-04-01","2022-04-03");
+VALUES (13,3,2,"2022-04-01","2022-04-03");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (4,1,4,"2022-05-21","2022-05-23");
+VALUES (3,4,4,"2022-05-21","2022-05-23");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (3,1,2,"2022-05-11","2022-05-13");
+VALUES (4,2,2,"2022-05-11","2022-05-13");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
 VALUES (4,12,2,"2022-05-11","2022-05-14");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (2,11,5,"2022-05-12","2022-05-14");
+VALUES (13,8,5,"2022-05-12","2022-05-14");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (5,9,7,"2022-05-13","2022-05-16");
+VALUES (9,6,7,"2022-05-13","2022-05-16");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (12,10,8,"2022-05-14","2022-05-17");
+VALUES (5,9,8,"2022-05-14","2022-05-17");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (13,8,4,"2022-05-15","2022-05-17");
+VALUES (1,9,4,"2022-05-15","2022-05-17");
 INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
-VALUES (11,7,6,"2022-05-16","2022-05-19");
+VALUES (6,7,6,"2022-05-16","2022-05-19");
+INSERT INTO transporte (id_estacion_origen, id_estacion_destino , id_vehiculo, fecha_salida, fecha_llegada)
+VALUES (7,8,3,"2022-05-16","2022-05-20");
 
-
--- tabla FACTURA
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (1,3,400.00,"PAGA","2022-03-24");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (2,2,1220.00,"PAGA","2022-03-27");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (3,1,876.00,"PAGA","2022-04-04");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (4,6,330.70,"PAGA","2022-03-29");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (5,4,780.00,"PAGA","2022-03-24");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (6,5,1030.00,"PAGA","2022-05-21");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (7,3,10000.00,"GENERADA","2023-05-10");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (8,9,1905.00,"PAGA","2022-08-17");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (10,5,7023.00,"GENERADA","2022-11-14");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (11,9,8830.00,"PAGA","2022-12-12");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (4,10,7503.00,"PAGA","2022-12-11");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (5,11,2106.00,"PAGA","2022-10-18");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (8,7,5786.00,"GENERADA","2022-07-19");
-INSERT INTO factura (id_transporte,id_usuario,total_factura,estado_factura,fecha_factura) 
-VALUES (9,4,3712.00,"PAGA","2022-06-28");
 
 -- tabla PAQUETE
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (1,4,3,3,0.90,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (2,1,2,2,1.20,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (2,1,2,2,3.57,"ESPERANDO RECEPCION");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (3,5,1,1,2.22,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (4,3,5,5,1.05,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (4,3,5,5,0.83,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (5,6,6,6,0.40,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,id_transporte,id_factura,peso_paquete,estado_paquete)
-VALUES (6,2,4,4,0.05,"ENTREGADO");
-INSERT INTO paquete (id_usuario_remitente,id_usuario_receptor,peso_paquete,estado_paquete)
+/*
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (3,3,"ENTREGADO");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (2,2,"ENTREGADO");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (2,2,"ESPERANDO RECEPCION");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (1,1,"EN CAMINO");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (5,5,"ENTREGADO");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (5,5,"ENTREGADO");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (6,6,"ENTREGADO");
+INSERT INTO paquete (id_transporte,id_factura,estado_paquete)
+VALUES (4,4,"ENTREGADO");
+INSERT INTO paquete (estado_paquete)
 VALUES (2,4,0.40,"ESPERANDO TRANSPORTE");
-
+*/
 -- insercion de paquetes a traves de stored procedures (inserta en varias tablas)
 SET @response = '0';
 SET @new_id_paquete = 0;
+-- CREACION DE PAQUETES
+CALL agregar_paquete(1, 0.90, 3, 4, @response, @new_id_paquete);
+CALL agregar_paquete(2, 1.20, 10, 3, @response, @new_id_paquete);
+CALL agregar_paquete(2, 3.57, 11, 13, @response, @new_id_paquete);
+CALL agregar_paquete(3, 2.22, 13, 3, @response, @new_id_paquete);
+CALL agregar_paquete(4, 1.05, 7, 8, @response, @new_id_paquete);
+CALL agregar_paquete(4, 0.83, 2, 1, @response, @new_id_paquete);
+CALL agregar_paquete(5, 0.40, 9, 6, @response, @new_id_paquete);
+CALL agregar_paquete(6, 0.05, 4, 2, @response, @new_id_paquete);
+CALL agregar_paquete(2, 7.40, 13, 3, @response, @new_id_paquete);
 CALL agregar_paquete(7, 12.70, 4, 12, @response, @new_id_paquete);
 CALL agregar_paquete(12, 11.23, 4, 12, @response, @new_id_paquete);
 CALL agregar_paquete(6, 7.05, 4, 12, @response, @new_id_paquete);
@@ -256,69 +239,85 @@ CALL agregar_paquete(4, 4.52, 5, 9, @response, @new_id_paquete);
 CALL agregar_paquete(3, 0.78, 8, 11, @response, @new_id_paquete);
 CALL agregar_paquete(6, 9.60, 13, 3, @response, @new_id_paquete);
 CALL agregar_paquete(11, 15.45, 1, 9, @response, @new_id_paquete);
-CALL agregar_paquete(9, 13.59, 6, 7, @response, @new_id_paquete);
-CALL modificar_estado_paquete(10,"ENTREGADO",@response);
+CALL agregar_paquete(9, 13.09, 6, 7, @response, @new_id_paquete);
+CALL agregar_paquete(9, 6.00, 6, 7, @response, @new_id_paquete);
+CALL agregar_paquete(9, 3.50, 6, 7, @response, @new_id_paquete);
+-- MODIFICACION DEL ESTADO
+CALL modificar_estado_paquete(1,"ESPERANDO RECEPCION",@response);
+CALL modificar_estado_paquete(2,"EN CAMINO",@response);
+CALL modificar_estado_paquete(3,"DEMORADO",@response);
+CALL modificar_estado_paquete(4,"ENTREGADO",@response);
+CALL modificar_estado_paquete(5,"ENTREGADO",@response);
+CALL modificar_estado_paquete(7,"DEMORADO",@response);
+CALL modificar_estado_paquete(8,"ENTREGADO",@response);
+CALL modificar_estado_paquete(9,"ENTREGADO",@response);
+CALL modificar_estado_paquete(10,"ESPERANDO RECEPCION",@response);
 CALL modificar_estado_paquete(11,"ESPERANDO RECEPCION",@response);
-CALL modificar_estado_paquete(12,"ENTREGADO",@response);
+CALL modificar_estado_paquete(12,"ESPERANDO RECEPCION",@response);
 CALL modificar_estado_paquete(13,"DEMORADO",@response);
-CALL modificar_estado_paquete(14,"ENTREGADO",@response);
-CALL modificar_estado_paquete(15,"ENTREGADO",@response);
-CALL modificar_estado_paquete(17,"DEMORADO",@response);
+CALL modificar_estado_paquete(14,"DEMORADO",@response);
+CALL modificar_estado_paquete(15,"EN CAMINO",@response);
+CALL modificar_estado_paquete(17,"EN CAMINO",@response);
 CALL modificar_estado_paquete(18,"ENTREGADO",@response);
-CALL modificar_estado_paquete(19,"ENTREGADO",@response);
 CALL modificar_estado_paquete(20,"ENTREGADO",@response);
-CALL agregar_datos_a_paquete(10, 5, 10, 5, '2023-11-15', '2023-11-17', @response);
-CALL agregar_datos_a_paquete(11, 6, 8, 6, '2023-11-16', '2023-11-19', @response);
-CALL agregar_datos_a_paquete(12, 7, 5, 7, '2023-11-17', '2023-11-20', @response);
-CALL agregar_datos_a_paquete(13, 8, 9, 4, '2023-11-12', '2023-11-15', @response);
-CALL agregar_datos_a_paquete(14, 9, 4, 8, '2023-11-14', '2023-11-16', @response);
-CALL agregar_datos_a_paquete(15, 10, 7, 5, '2023-11-05', '2023-11-07', @response);
-CALL agregar_datos_a_paquete(16, 11, 0, 0, '2023-11-04', '2023-11-10', @response);
-CALL agregar_datos_a_paquete(17, 2, 9, 10, '2023-11-11', '2023-11-13', @response);
-CALL agregar_datos_a_paquete(18, 3, 5, 9, '2023-11-12', '2023-11-14', @response);
-CALL agregar_datos_a_paquete(19, 4, 7, 6, '2023-11-17', '2023-11-19', @response);
-CALL agregar_datos_a_paquete(20, 6, 6, 11, '2023-11-18', '2023-11-21', @response);
+CALL modificar_estado_paquete(21,"ENTREGADO",@response);
+CALL modificar_estado_paquete(22,"ENTREGADO",@response);
+-- SE AGREGAN LOS ATRIBUTOS FALTANTES A LOS PAQUETES
+CALL agregar_datos_a_paquete(1, 4, 6, 0, '2023-11-16', '2023-11-19', @response);
+CALL agregar_datos_a_paquete(2, 5, 3, 0, '2023-11-17', '2023-11-20', @response);
+CALL agregar_datos_a_paquete(3, 8, 4, 0, '2023-11-12', '2023-11-15', @response);
+CALL agregar_datos_a_paquete(4, 2, 5, 0, '2023-11-14', '2023-11-16', @response);
+CALL agregar_datos_a_paquete(5, 11, 14, 0, '2023-11-05', '2023-11-07', @response);
+CALL agregar_datos_a_paquete(6, 9, 1, 0, '2023-11-04', '2023-11-10', @response);
+CALL agregar_datos_a_paquete(7, 1, 10, 0, '2023-11-11', '2023-11-13', @response);
+CALL agregar_datos_a_paquete(8, 2, 7, 0, '2023-11-12', '2023-11-14', @response);
+CALL agregar_datos_a_paquete(9, 8, 5, 0, '2023-11-17', '2023-11-19', @response);
+CALL agregar_datos_a_paquete(10, 5, 8, 0, '2023-11-15', '2023-11-17', @response);
+CALL agregar_datos_a_paquete(11, 6, 8, 0, '2023-11-16', '2023-11-19', @response);
+CALL agregar_datos_a_paquete(12, 7, 8, 0, '2023-11-17', '2023-11-20', @response);
+CALL agregar_datos_a_paquete(13, 8, 9, 0, '2023-11-12', '2023-11-15', @response);
+CALL agregar_datos_a_paquete(14, 9, 9, 0, '2023-11-14', '2023-11-16', @response);
+CALL agregar_datos_a_paquete(15, 10, 11, 0, '2023-11-05', '2023-11-07', @response);
+CALL agregar_datos_a_paquete(16, 11, 11, 0, '2023-11-04', '2023-11-10', @response);
+CALL agregar_datos_a_paquete(17, 2, 2, 0, '2023-11-11', '2023-11-13', @response);
+CALL agregar_datos_a_paquete(18, 3, 5, 0, '2023-11-12', '2023-11-14', @response);
+CALL agregar_datos_a_paquete(19, 4, 12, 0, '2023-11-17', '2023-11-19', @response);
+CALL agregar_datos_a_paquete(20, 6, 13, 0, '2023-11-18', '2023-11-21', @response);
+CALL agregar_datos_a_paquete(21, 6, 13, 0, '2023-11-18', '2023-11-21', @response);
+CALL agregar_datos_a_paquete(22, 6, 13, 0, '2023-11-18', '2023-11-21', @response);
 
--- tabla FECHAS_PAQUETE
+-- CREACION DE FACTURAS
+CALL crear_factura(1,6,@response);
+CALL crear_factura(2,3,@response);
+CALL crear_factura(2,4,@response);
+CALL crear_factura(3,5,@response);
+CALL crear_factura(4,14,@response);
+CALL crear_factura(4,1,@response);
+CALL crear_factura(5,10,@response);
+CALL crear_factura(6,7,@response);
+CALL crear_factura(2,5,@response);
+CALL crear_factura(7,8,@response);
+CALL crear_factura(12,8,@response);
+CALL crear_factura(6,8,@response);
+CALL crear_factura(3,9,@response);
+CALL crear_factura(5,9,@response);
+CALL crear_factura(8,11,@response);
+CALL crear_factura(4,11,@response);
+CALL crear_factura(6,5,@response);
+CALL crear_factura(3,5,@response);
+CALL crear_factura(9,13,@response);
 
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (1,"2022-03-20","2022-03-23","2022-03-25");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (2,"2022-03-25","2022-03-27","2022-03-29");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (3,"2022-03-26","2022-03-27","2022-03-29");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (4,"2022-03-24","2022-03-24","2022-03-26");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (5,"2022-03-30","2022-04-01","2022-04-03");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (6,"2022-03-31","2022-04-01","2022-04-03");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (7,"2022-05-20","2022-05-21","2022-05-23");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga, fecha_salida, fecha_llegada)
-VALUES (8,"2022-04-01","2022-04-05","2022-04-07");
-INSERT INTO fechas_paquete (id_paquete, fecha_carga)
-VALUES (9,"2022-08-25");
+-- ACTUALIZACION DE ESTADO DE LAS FACTURAS
 
--- tabla ORIGEN_PAQUETE
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (1,3);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (2,10);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (3,11);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (4,1);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (5,7);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (6,2);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (7,9);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (8,4);
-INSERT INTO origen_paquete (id_paquete,id_estacion) VALUES (9,3);
-
-
--- tabla DESTINO_PAQUETE
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (1,4);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (2,10);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (3,11);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (4,3);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (5,8);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (6,1);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (7,6);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (8,2);
-INSERT INTO destino_paquete (id_paquete,id_estacion) VALUES (9,1);
+CALL modificar_estado_factura(1, "PAGA", @response);
+CALL modificar_estado_factura(3, "CANCELADA", @response);
+CALL modificar_estado_factura(4, "PAGA", @response);
+CALL modificar_estado_factura(6, "PAGA", @response);
+CALL modificar_estado_factura(7, "PAGA", @response);
+CALL modificar_estado_factura(8, "CANCELADA", @response);
+CALL modificar_estado_factura(10, "PAGA", @response);
+CALL modificar_estado_factura(11, "PAGA", @response);
+CALL modificar_estado_factura(12, "PAGA", @response);
+CALL modificar_estado_factura(14, "PAGA", @response);
+CALL modificar_estado_factura(16, "PAGA", @response);
+CALL modificar_estado_factura(17, "PAGA", @response);
