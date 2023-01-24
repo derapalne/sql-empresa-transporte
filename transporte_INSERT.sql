@@ -321,3 +321,30 @@ CALL modificar_estado_factura(12, "PAGA", @response);
 CALL modificar_estado_factura(14, "PAGA", @response);
 CALL modificar_estado_factura(16, "PAGA", @response);
 CALL modificar_estado_factura(17, "PAGA", @response);
+
+-- calificacion usuario
+
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (1, 4, "Muy buen servicio. Un poco feo el empleado nomás", "2023-11-14");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (3, 2, "Me rompieron el paquete y el empleado tenia tatuajes horribles y asquerosos", "2023-11-10");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (4, 1, "No puedo creer que exista una empresa así de desfachatada", "2023-11-09");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (6, 5, "Volvere a utilizar el servisio regularmente muchas gracias", "2023-11-17");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (7, 5, "Llego el paquete en perfecto estado", "2023-11-16");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (8, 4, "", "2023-11-14");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (9, 3, "Muy caro", "2023-11-15");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (10, 3, "", "2023-11-12");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (11, 4, "Se demoraron pero llego bien", "2023-11-10");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (12, 5, "Excelente servicio", "2023-11-11");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (2, 1, "Horrible atencion en la estacion", "2023-11-16");
+INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
+VALUES (5, 5, "", "2023-11-14");

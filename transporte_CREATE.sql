@@ -14,6 +14,14 @@ CREATE TABLE IF NOT EXISTS usuario (
     telefono_usuario VARCHAR(15) NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS calificacion_usuario (
+	id_calificacion INT NOT NULL primary key auto_increment,
+    id_usuario INT NOT NULL,
+    puntuacion TINYINT NOT NULL,
+    comentario VARCHAR(500),
+    fecha_calificacion DATE NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS estacion (
 	id_estacion INT NOT NULL primary key auto_increment,
     ciudad_estacion VARCHAR(30) NOT NULL,
@@ -128,6 +136,12 @@ CREATE TABLE IF NOT EXISTS logs_paquete (
 );
 
 -- Alterar tablas
+
+ALTER TABLE calificacion_usuario
+		ADD CONSTRAINT fk_id_usuario
+	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
 
 ALTER TABLE vehiculo
 		ADD CONSTRAINT fk_id_estacion_actual
@@ -868,6 +882,13 @@ CREATE OR REPLACE VIEW paquetes_view AS
     JOIN destino_paquete d ON p.id_paquete=d.id_paquete
     JOIN fechas_paquete f ON f.id_paquete=p.id_paquete;
 
+-- calificaciones con nombre de usuario
+
+CREATE OR REPLACE VIEW calificaciones_view AS
+	SELECT c.puntuacion, c.comentario, c.fecha_calificacion,
+		   CONCAT(u.nombre_usuario, " ", u.apellido_usuario) as usuario
+           FROM calificacion_usuario c JOIN usuario u ON c.id_usuario=u.id_usuario;
+
 -- creacion de TRIGGERS
 
 -- INSERTAR en TABLA AUDITORIA DATOS DE PAQUETE
@@ -1054,7 +1075,7 @@ BEGIN
     OR NEW.fecha_salida > CURDATE()
 	OR NEW.fecha_llegada > CURDATE()
     THEN 
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Imposible elegir fecha de carga, salida o llegada en el futuro.";
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Imposible elegir fecha de carga, salida o llegada en el futuro.";
     END IF;
 END$$
 
@@ -1064,7 +1085,7 @@ FOR EACH ROW
 BEGIN
     IF NEW.fecha_carga > CURDATE()
     THEN 
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Imposible elegir fecha de carga en el futuro.";
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "Imposible elegir fecha de carga en el futuro.";
     END IF;
     IF NEW.fecha_salida IS NOT NULL AND NEW.fecha_salida < NEW.fecha_carga AND NEW.fecha_salida <> OLD.fecha_salida
     OR NEW.fecha_llegada IS NOT NULL AND NEW.fecha_llegada < NEW.fecha_salida AND NEW.fecha_llegada <> OLD.fecha_llegada
@@ -1078,6 +1099,17 @@ CREATE TRIGGER `after_insert_estacion` AFTER INSERT ON `estacion`
 FOR EACH ROW
 BEGIN
     INSERT INTO estadistica_estacion (id_estacion) VALUES (NEW.id_estacion);
+END$$
+
+DROP TRIGGER IF EXISTS `before_insert_calificacion_usuario`$$
+CREATE TRIGGER `before_insert_calificacion_usuario` BEFORE INSERT ON `calificacion_usuario`
+FOR EACH ROW
+BEGIN
+    IF NEW.puntuacion < 0 
+    OR NEW.puntuacion > 5 
+    THEN 
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = "Imposible insertar números fuera de rango";
+    END IF;
 END$$
 
 DELIMITER ;
