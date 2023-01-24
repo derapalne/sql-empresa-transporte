@@ -507,27 +507,31 @@ sp: BEGIN
         LEAVE sp;
     END IF;
     -- validar campo de ordenamiento y setear el prefijo según la tabla a la que pertenezca
-	IF campo_ordenamiento = "fecha_carga"
-	OR campo_ordenamiento = "fecha_salida"
-	OR campo_ordenamiento = "fecha_llegada" THEN
+	IF campo_ordenamiento IN ( 
+		"fecha_carga",
+		"fecha_salida",
+		"fecha_llegada" 
+	) THEN
 		SET prefijo_orden = "f.";
 	ELSE
-		IF campo_ordenamiento = "id_usuario_remitente"
-		OR campo_ordenamiento = "id_usuario_receptor"
-		OR campo_ordenamiento = "id_paquete"
-		OR campo_ordenamiento = "id_transporte"
-		OR campo_ordenamiento = "id_factura"
-		OR campo_ordenamiento = "peso_paquete"
-		OR campo_ordenamiento = "estado_paquete" THEN
+		IF campo_ordenamiento IN ( "id_usuario_remitente"
+			"id_usuario_receptor",
+			"id_paquete",
+			"id_transporte",
+			"id_factura",
+			"peso_paquete",
+			"estado_paquete"
+		) THEN
 			SET prefijo_orden = "p.";
 		ELSE
-			IF campo_ordenamiento = "id_usuario_remitente"
-			OR campo_ordenamiento = "id_usuario_receptor"
-			OR campo_ordenamiento = "id_paquete"
-			OR campo_ordenamiento = "id_transporte"
-			OR campo_ordenamiento = "id_factura"
-			OR campo_ordenamiento = "peso_paquete"
-			OR campo_ordenamiento = "estado_paquete" THEN
+			IF campo_ordenamiento IN ( "id_usuario_remitente"
+				"id_usuario_receptor"
+				"id_paquete"
+				"id_transporte"
+				"id_factura"
+				"peso_paquete"
+				"estado_paquete" 
+            ) THEN
 				SET prefijo_orden = "p.";
 			ELSE
 				IF campo_ordenamiento <> "" THEN
