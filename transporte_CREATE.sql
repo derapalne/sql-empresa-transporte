@@ -812,6 +812,53 @@ sp: BEGIN
     SET response = "Estado de la factura actualizado con éxito";
 END$$
 
+DROP PROCEDURE IF EXISTS `ganancias_por_estacion`$$
+CREATE PROCEDURE `ganancias_por_estacion` ()
+BEGIN
+	DECLARE done BOOLEAN DEFAULT FALSE;
+    DECLARE total_factura_actual DECIMAL (9,2);
+    DECLARE id_estacion_actual INT;
+    DECLARE curs CURSOR FOR
+		SELECT id_estacion as id_estacion_actual FROM estacion;
+        
+	DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+    -- crear tabla temporal para hacer la selección luego
+    DROP TEMPORARY TABLE IF EXISTS `ganancias_estaciones_origen`;
+    CREATE TEMPORARY TABLE `ganancias_estaciones_origen` (
+		id_estacion INT NOT NULL PRIMARY KEY,
+        nombre_estacion VARCHAR(40),
+        ciudad_estacion VARCHAR(30),
+        ganancias DECIMAL(9,2) DEFAULT 0.00
+    );
+    -- abrir cursor y loop
+    OPEN curs;
+    cursor_loop: LOOP
+		-- guardar la info de estacion actual en la variable declarada
+		FETCH curs INTO id_estacion_actual;
+	-- comprobar si done es TRUE, o sea si ya no hay más registros
+	IF done THEN LEAVE cursor_loop;
+    END IF;
+    
+    -- insertar info de estacion en la tabla temporaria a traves de un SELECT
+    INSERT INTO ganancias_estaciones_origen (id_estacion, nombre_estacion, ciudad_estacion)
+    SELECT id_estacion, nombre_estacion, ciudad_estacion FROM estacion WHERE id_estacion=id_estacion_actual;
+    
+    -- actualizar la estacion en la tabla temporaria, sumando las ganancias de todos los transportes
+	-- que la tienen de estación de origen
+    
+    UPDATE ganancias_estaciones_origen SET ganancias = (
+											SELECT SUM(f.total_factura) FROM factura f
+                                            JOIN transporte t ON f.id_transporte=t.id_transporte
+                                            WHERE t.id_estacion_origen=id_estacion_actual)
+		   WHERE id_estacion=id_estacion_actual;
+	-- cerrar el loop y cursor
+    END LOOP cursor_loop;
+    CLOSE curs;
+    
+    -- hacer la selección de estaciones
+    SELECT * FROM ganancias_estaciones_origen ORDER BY ganancias;
+END$$
+
 /*
 DROP PROCEDURE IF EXISTS ``$$
 CREATE PROCEDURE `` ()
