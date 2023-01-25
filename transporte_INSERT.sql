@@ -115,11 +115,21 @@ VALUES ("64857913","Elena","Morada","06:00-14:00",175030.00,1,true);
 INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_vehiculo, empleado_conductor) 
 VALUES ("64329785","Pedro","Bello","06:00-14:00",187600.00,2,true);
 INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_vehiculo, empleado_conductor) 
-VALUES ("97278495","Enk","Antador","06:00-14:00",110000.00,2,false);
+VALUES ("97278495","Enk","Antador","06:00-14:00",120090.00,2,false);
 INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_vehiculo, empleado_conductor) 
 VALUES ("58467519","Honorio","Gentil","22:00-06:00",193700.00,3,true);
 INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_vehiculo, empleado_conductor) 
 VALUES ("62518495","James","Taylorson","14:00-22:00",175200.00,4,true);
+INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_estacion, empleado_conductor) 
+VALUES ("58794621","Pepe","Flores","06:00-14:00",107560.00,10,false);
+INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_estacion, empleado_conductor) 
+VALUES ("57649812","Ermineve","Llauneve","10:00-18:00",1054200.00,5,false);
+INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_estacion, empleado_conductor) 
+VALUES ("56789451","Gabino","Baila","06:00-14:00",112340.00,8,false);
+INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_estacion, empleado_conductor) 
+VALUES ("57984561","Carlos","Rubio","10:00-18:00",98540.00,7,false);
+INSERT INTO empleado (dni_empleado, nombre_empleado , apellido_empleado , horario_empleado , sueldo_empleado, id_estacion, empleado_conductor) 
+VALUES ("56497823","Margarita","Peralta","09:00-17:00",105270.00,2,false);
 
 -- tabla ASISTENCIA_EMPLEADO
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
@@ -133,6 +143,16 @@ VALUES (4,2,"14:00:43","22:03:35","2022-03-17");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (5,2,"14:06:00","21:57:44","2022-03-17");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (6,10,"06:03:45","13:54:08","2022-07-16");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (7,5,"10:00:50","17:59:21","2022-09-11");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (8,8,"06:02:04","14:00:00","2022-07-22");
+INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
+VALUES (9,"2022-05-15");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (10,2,"09:02:17","17:03:02","2022-04-28");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (1,4,"06:03:01","13:59:12","2022-04-12");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (2,1,"05:52:57","13:51:38","2022-04-12");
@@ -142,6 +162,16 @@ INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
 VALUES (4,"2022-04-12");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (5,2,"14:01:20","21:59:59","2022-04-12");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (6,10,"06:05:30","13:55:10","2022-07-17");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (7,5,"09:57:08","17:55:10","2022-09-12");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (8,8,"06:04:41","14:00:04","2022-07-23");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (9,7,"10:01:02","18:05:56","2022-05-16");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (10,2,"09:00:04","16:57:45","2022-04-29");
 INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
 VALUES (1,"2022-04-17");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
@@ -153,6 +183,16 @@ VALUES (4,2,"14:01:13","22:02:24","2022-05-02");
 INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
 VALUES (5,"2022-05-02");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (6,10,"06:10:05","14:00:13","2022-07-18");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (7,5,"10:04:50","17:59:55","2022-09-13");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (8,8,"06:01:20","14:01:01","2022-07-24");
+INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
+VALUES (9,"2022-05-17");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (10,2,"09:01:00","16:58:24","2022-04-30");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (1,4,"06:04:36","13:53:13","2022-07-18");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (2,1,"06:03:52","13:59:50","2022-09-11");
@@ -162,6 +202,16 @@ INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
 VALUES (4,"2022-05-16");
 INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
 VALUES (5,2,"14:05:36","22:03:55","2022-04-28");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (6,10,"06:11:57","14:10:13","2022-07-20");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (7,5,"10:07:10","18:07:15","2022-09-14");
+INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
+VALUES (8,"2022-07-23");
+INSERT INTO asistencia_empleado (id_empleado,fecha_asistencia)
+VALUES (9,"2022-05-18");
+INSERT INTO asistencia_empleado (id_empleado,id_estacion,hora_entrada,hora_salida,fecha_asistencia)
+VALUES (10,2,"09:04:30","16:45:57","2022-05-02");
 
 
 -- tabla TRANSPORTE

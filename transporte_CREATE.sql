@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS empleado (
     horario_empleado VARCHAR(30) NOT NULL,
     sueldo_empleado DECIMAL(9,2) NOT NULL,
     id_vehiculo INT,
+    id_estacion INT,
     empleado_conductor BOOLEAN
 );
 
@@ -167,6 +168,12 @@ ALTER TABLE empleado
     ON DELETE CASCADE
     ON UPDATE CASCADE;
     
+ALTER TABLE empleado
+		ADD CONSTRAINT fk_id_estacion_empleado
+	FOREIGN KEY (id_estacion) REFERENCES estacion(id_estacion)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;    
+
 ALTER TABLE asistencia_empleado
 		ADD CONSTRAINT fk_id_empleado_asistencia
 	FOREIGN KEY (id_empleado) REFERENCES empleado(id_empleado)
@@ -818,7 +825,8 @@ DELIMITER ;
 
 -- toda la información de los paquetes no entregados
 CREATE OR REPLACE VIEW paquetes_no_entregado_view AS
-	SELECT p.*, o.id_estacion as id_estacion_origen, d.id_estacion as id_estacion_destino,
+	SELECT p.*, o.id_estacion as id_estacion_origen, 
+		   d.id_estacion as id_estacion_destino,
 		   f.fecha_carga, f.fecha_salida, f.fecha_llegada
 	FROM paquete p 
 		JOIN origen_paquete o ON p.id_paquete=o.id_paquete
@@ -828,7 +836,8 @@ CREATE OR REPLACE VIEW paquetes_no_entregado_view AS
 
 -- todos los empleados conductores y sus vehiculos asociados
 CREATE OR REPLACE VIEW empleados_conductores_view AS
-	SELECT e.id_empleado, e.dni_empleado, e.nombre_empleado, e.apellido_empleado, e.horario_empleado, e.id_vehiculo,
+	SELECT e.id_empleado, e.dni_empleado, CONCAT(e.nombre_empleado, " ", e.apellido_empleado) as nombre_completo_empleado,
+		   e.horario_empleado, e.id_vehiculo,
 		   v.patente_vehiculo, v.modelo_vehiculo, v.estado_vehiculo, v.id_estacion_actual,
            est.ciudad_estacion as ciudad_estacion_actual, est.nombre_estacion as nombre_estacion_actual
     FROM empleado e
@@ -839,7 +848,7 @@ CREATE OR REPLACE VIEW empleados_conductores_view AS
 -- todos los gastos de vehículos con los responsables de dicho vehículo
 CREATE OR REPLACE VIEW gasto_vehiculo_responsable_view AS
 	SELECT g.id_vehiculo, g.valor_gasto, g.descripcion_gasto, g.fecha_gasto,
-		   e.nombre_empleado, e.apellido_empleado, e.id_empleado,
+		   CONCAT(e.nombre_empleado, " ", e.apellido_empleado) as nombre_completo_empleado, e.id_empleado,
            v.patente_vehiculo, v.consumo_lt_combustible_km
     FROM gasto_vehiculo g 
 		JOIN empleado e ON g.id_vehiculo=e.id_vehiculo
@@ -847,14 +856,15 @@ CREATE OR REPLACE VIEW gasto_vehiculo_responsable_view AS
     
 -- todas las inasistencias con nombre y apellido
 CREATE OR REPLACE VIEW inasistencias_view AS
-	SELECT a.fecha_asistencia as fecha_inasistencia, e.nombre_empleado, e.apellido_empleado, e.id_empleado
+	SELECT a.fecha_asistencia as fecha_inasistencia, 
+    CONCAT(e.nombre_empleado, " ",e.apellido_empleado) as nombre_completo_empleado, e.id_empleado
     FROM asistencia_empleado a JOIN empleado e ON a.id_empleado=e.id_empleado
     WHERE a.hora_entrada IS NULL;
 
 -- llegadas tarde de los empleados con fecha y hora
 CREATE OR REPLACE VIEW llegadas_tarde_view AS
 	SELECT extraer_horario_entrada(e.horario_empleado) as horario_entrada_empleado , a.hora_entrada, a.fecha_asistencia,
-		   e.id_empleado, e.nombre_empleado, e.apellido_empleado
+		   CONCAT(e.nombre_empleado, " ", e.apellido_empleado) as nombre_completo_empleado, e.id_empleado 
 	FROM empleado e
 	JOIN asistencia_empleado a ON a.id_empleado=e.id_empleado
 	WHERE a.hora_entrada > ADDTIME(extraer_horario_entrada(e.horario_empleado), "00:05");
@@ -862,14 +872,15 @@ CREATE OR REPLACE VIEW llegadas_tarde_view AS
 -- salidas temprano de los empleados con fecha y hora
 CREATE OR REPLACE VIEW salidas_temprano_view AS
 	SELECT extraer_horario_salida(e.horario_empleado) as horario_salida_empleado , a.hora_salida, a.fecha_asistencia, 
-		   e.id_empleado, e.nombre_empleado, e.apellido_empleado
+		   CONCAT(e.nombre_empleado, " ", e.apellido_empleado) as nombre_completo_empleado, e.id_empleado
 	FROM empleado e
 	JOIN asistencia_empleado a ON a.id_empleado=e.id_empleado
 	WHERE a.hora_salida < ADDTIME(extraer_horario_salida(e.horario_empleado), "-00:05");
 
 -- usuarios con facturas sin pagar
 CREATE OR REPLACE VIEW usuarios_deudores_view AS
-	SELECT u.id_usuario ,u.nombre_usuario, u.apellido_usuario, f.id_factura, f.estado_factura, f.total_factura
+	SELECT u.id_usuario , CONCAT(u.nombre_usuario, " ",u.apellido_usuario) as nombre_completo_usuario, 
+    f.id_factura, f.estado_factura, f.total_factura
     FROM factura f JOIN usuario u ON f.id_usuario=u.id_usuario
     WHERE f.estado_factura NOT LIKE "PAGA";
     
