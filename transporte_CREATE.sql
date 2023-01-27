@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS usuario (
 CREATE TABLE IF NOT EXISTS calificacion_usuario (
 	id_calificacion INT NOT NULL primary key auto_increment,
     id_usuario INT NOT NULL,
+    id_estacion INT NOT NULL,
     puntuacion TINYINT NOT NULL,
     comentario VARCHAR(500),
     fecha_calificacion DATE NOT NULL
@@ -139,8 +140,14 @@ CREATE TABLE IF NOT EXISTS logs_paquete (
 -- Alterar tablas
 
 ALTER TABLE calificacion_usuario
-		ADD CONSTRAINT fk_id_usuario
+		ADD CONSTRAINT fk_id_usuario_calificador
 	FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE;
+
+ALTER TABLE calificacion_usuario
+		ADD CONSTRAINT fk_id_estacion_calificada
+	FOREIGN KEY (id_estacion) REFERENCES estacion(id_estacion)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
@@ -267,16 +274,6 @@ ALTER TABLE destino_paquete
 -- creacion de FUNCIONES
 
 DELIMITER $$
-DROP FUNCTION IF EXISTS `convertir_sueldo_a_usd`$$
-CREATE FUNCTION `convertir_sueldo_a_usd` (id_empleado INT, dolar INT) 
-RETURNS DECIMAL(9,2)
-READS SQL DATA
-BEGIN
-	DECLARE sueldo DECIMAL(9,2);
-	SET sueldo = (SELECT sueldo_empleado FROM empleado WHERE empleado.id_empleado=id_empleado)/dolar;
-	RETURN sueldo;
-END$$
-
 DROP FUNCTION IF EXISTS `costo_combustible`$$
 CREATE FUNCTION `costo_combustible` (id_vehiculo INT, distancia_km DECIMAL(9,2)) 
 RETURNS DECIMAL(9,2)
@@ -289,19 +286,6 @@ BEGIN
     SET consumo_lt_km = (SELECT consumo_lt_combustible_km FROM vehiculo WHERE vehiculo.id_vehiculo=id_vehiculo);
     SET costo = consumo_lt_km*distancia_km*valor_nafta;
     RETURN costo;
-END$$
-
-DROP FUNCTION IF EXISTS `get_id_usuario_by_nombre_completo`$$
-CREATE FUNCTION `get_id_usuario_by_nombre_completo` (nombre_completo VARCHAR(61))
-RETURNS INT
-READS SQL DATA
-BEGIN
-	DECLARE nombre_usuario, apellido_usuario VARCHAR(30);
-    DECLARE id_usuario INT;
-    SET nombre_usuario = (SELECT SUBSTRING_INDEX(nombre_completo, " ", 1));
-    SET apellido_usuario = (SELECT SUBSTRING_INDEX(nombre_completo, " ", -1));
-    SET id_usuario = (SELECT id_usuario FROM usuario u WHERE u.nombre_usuario=nombre_usuario AND u.apellido_usuario=apellido_usuario);
-    RETURN id_usuario;
 END$$
 
 DROP FUNCTION IF EXISTS `agregar_asignacion_int`$$
@@ -545,20 +529,9 @@ sp: BEGIN
 		) THEN
 			SET prefijo_orden = "p.";
 		ELSE
-			IF campo_ordenamiento IN ( "id_usuario_remitente"
-				"id_usuario_receptor"
-				"id_paquete"
-				"id_transporte"
-				"id_factura"
-				"peso_paquete"
-				"estado_paquete" 
-            ) THEN
-				SET prefijo_orden = "p.";
-			ELSE
-				IF campo_ordenamiento <> "" THEN
-					SELECT CONCAT("Proporcione un campo de ordenamiento válido: ", campo_ordenamiento) as response;
-					LEAVE sp;
-				END IF;
+			IF campo_ordenamiento <> "" THEN
+				SELECT CONCAT("Proporcione un campo de ordenamiento válido: ", campo_ordenamiento) as response;
+				LEAVE sp;
 			END IF;
 		END IF;
 	END IF;
@@ -613,7 +586,7 @@ sp: BEGIN
 		"ESPERANDO TRANSPORTE",
 		"EN CAMINO",
 		"DEMORADO",
-		"ESPERANDO RECEPCION",
+		"RECIBIDO",
 		"ENTREGADO"
 	) THEN
 		SET response =  CONCAT("Proporcione un estado válido: ", in_estado_paquete, " no pertenece a las opciones aceptadas");
@@ -679,14 +652,6 @@ sp: BEGIN
     END IF;
     
     SET response = CONCAT("Paquete actualizado exitosamente. Id: ", in_id_paquete);
-END$$
-
-DROP PROCEDURE IF EXISTS `get_top_estaciones`$$
-CREATE PROCEDURE `get_top_estaciones` (
-	IN tipo_estacion CHAR(3)
-)
-BEGIN
-	DECLARE done BOOLEAN DEFAULT FALSE;
 END$$
 
 DROP PROCEDURE IF EXISTS `crear_factura_validacion`$$
@@ -843,20 +808,22 @@ BEGIN
     INSERT INTO ganancias_estaciones_origen (id_estacion, nombre_estacion, ciudad_estacion)
     SELECT id_estacion, nombre_estacion, ciudad_estacion FROM estacion WHERE id_estacion=id_estacion_actual;
     
-    -- actualizar la estacion en la tabla temporaria, sumando las ganancias de todos los transportes
-	-- que la tienen de estación de origen
-    
-    UPDATE ganancias_estaciones_origen SET ganancias = (
-											SELECT SUM(f.total_factura) FROM factura f
-                                            JOIN transporte t ON f.id_transporte=t.id_transporte
-                                            WHERE t.id_estacion_origen=id_estacion_actual)
-		   WHERE id_estacion=id_estacion_actual;
+    SET total_factura_actual = (SELECT SUM(f.total_factura) FROM factura f
+								JOIN transporte t ON f.id_transporte=t.id_transporte
+								WHERE t.id_estacion_origen=id_estacion_actual);
+	
+    -- verificar que el resultado no sea null (complica la visualización)
+	IF total_factura_actual IS NOT NULL THEN
+		-- actualizar la estacion en la tabla temporaria, sumando las ganancias de todos los transportes
+		-- que la tienen de estación de origen
+		UPDATE ganancias_estaciones_origen SET ganancias = total_factura_actual WHERE id_estacion=id_estacion_actual;
+	END IF;
 	-- cerrar el loop y cursor
     END LOOP cursor_loop;
     CLOSE curs;
     
-    -- hacer la selección de estaciones
-    SELECT * FROM ganancias_estaciones_origen ORDER BY ganancias;
+    -- hacer la selección de estaciones, con los nombres concatenados para facilitar la visualización
+    SELECT *, CONCAT(nombre_estacion, " - ", ciudad_estacion) as nombres_concatenados FROM ganancias_estaciones_origen ORDER BY ganancias;
 END$$
 
 /*
@@ -944,8 +911,10 @@ CREATE OR REPLACE VIEW paquetes_view AS
 
 CREATE OR REPLACE VIEW calificaciones_view AS
 	SELECT c.puntuacion, c.comentario, c.fecha_calificacion,
-		   CONCAT(u.nombre_usuario, " ", u.apellido_usuario) as usuario
-           FROM calificacion_usuario c JOIN usuario u ON c.id_usuario=u.id_usuario;
+		   CONCAT(u.nombre_usuario, " ", u.apellido_usuario) as usuario,
+           CONCAT(e.nombre_estacion, " - ", e.ciudad_estacion) as estacion
+           FROM calificacion_usuario c JOIN usuario u ON c.id_usuario=u.id_usuario
+           JOIN estacion e ON c.id_estacion=e.id_estacion;
 
 -- creacion de TRIGGERS
 

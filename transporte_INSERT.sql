@@ -293,7 +293,7 @@ CALL agregar_paquete(9, 13.09, 6, 7, @response, @new_id_paquete);
 CALL agregar_paquete(9, 6.00, 6, 7, @response, @new_id_paquete);
 CALL agregar_paquete(9, 3.50, 6, 7, @response, @new_id_paquete);
 -- MODIFICACION DEL ESTADO
-CALL modificar_estado_paquete(1,"ESPERANDO RECEPCION",@response);
+CALL modificar_estado_paquete(1,"RECIBIDO",@response);
 CALL modificar_estado_paquete(2,"EN CAMINO",@response);
 CALL modificar_estado_paquete(3,"DEMORADO",@response);
 CALL modificar_estado_paquete(4,"ENTREGADO",@response);
@@ -301,9 +301,9 @@ CALL modificar_estado_paquete(5,"ENTREGADO",@response);
 CALL modificar_estado_paquete(7,"DEMORADO",@response);
 CALL modificar_estado_paquete(8,"ENTREGADO",@response);
 CALL modificar_estado_paquete(9,"ENTREGADO",@response);
-CALL modificar_estado_paquete(10,"ESPERANDO RECEPCION",@response);
-CALL modificar_estado_paquete(11,"ESPERANDO RECEPCION",@response);
-CALL modificar_estado_paquete(12,"ESPERANDO RECEPCION",@response);
+CALL modificar_estado_paquete(10,"RECIBIDO",@response);
+CALL modificar_estado_paquete(11,"RECIBIDO",@response);
+CALL modificar_estado_paquete(12,"RECIBIDO",@response);
 CALL modificar_estado_paquete(13,"DEMORADO",@response);
 CALL modificar_estado_paquete(14,"DEMORADO",@response);
 CALL modificar_estado_paquete(15,"EN CAMINO",@response);
@@ -374,27 +374,27 @@ CALL modificar_estado_factura(17, "PAGA", @response);
 
 -- calificacion usuario
 
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (1, 4, "Muy buen servicio. Un poco feo el empleado nomás", "2023-11-14");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (3, 2, "Me rompieron el paquete y el empleado tenia tatuajes horribles y asquerosos", "2023-11-10");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (4, 1, "No puedo creer que exista una empresa así de desfachatada", "2023-11-09");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (6, 5, "Volvere a utilizar el servisio regularmente muchas gracias", "2023-11-17");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (7, 5, "Llego el paquete en perfecto estado", "2023-11-16");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (8, 4, "", "2023-11-14");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (9, 3, "Muy caro", "2023-11-15");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (10, 3, "", "2023-11-12");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (11, 4, "Se demoraron pero llego bien", "2023-11-10");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (12, 5, "Excelente servicio", "2023-11-11");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (2, 1, "Horrible atencion en la estacion", "2023-11-16");
-INSERT INTO calificacion_usuario (id_usuario, puntuacion, comentario, fecha_calificacion)
-VALUES (5, 5, "", "2023-11-14");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (1, 4, 4, "Muy buen servicio. Un poco feo el empleado nomás", "2023-11-14");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (3, 5, 2, "Me rompieron el paquete y el empleado tenia tatuajes horribles y asquerosos", "2023-11-10");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (4, 5, 1, "No puedo creer que exista una empresa así de desfachatada", "2023-11-09");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (6, 6, 5, "Volvere a utilizar el servisio regularmente muchas gracias", "2023-11-17");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (7, 4, 5, "Llego el paquete en perfecto estado", "2023-11-16");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (8, 7, 4, "", "2023-11-14");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (9, 9, 3, "Muy caro", "2023-11-15");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (10, 4, 3, "", "2023-11-12");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (11, 3, 4, "Se demoraron pero llego bien", "2023-11-10");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (12, 6, 5, "Excelente servicio", "2023-11-11");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (2, 5, 1, "Horrible atencion en la estacion", "2023-11-16");
+INSERT INTO calificacion_usuario (id_usuario, id_estacion, puntuacion, comentario, fecha_calificacion)
+VALUES (5, 4, 5, "", "2023-11-14");
