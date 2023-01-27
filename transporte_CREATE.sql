@@ -773,6 +773,7 @@ sp: BEGIN
 		SET response = CONCAT("No se puede cambiar el estado de esta factura: ", estado_anterior_factura);
         LEAVE sp;
     END IF;
+    
     UPDATE factura SET estado_factura = in_estado_factura WHERE id_factura=in_id_factura;
     SET response = "Estado de la factura actualizado con éxito";
 END$$
@@ -810,7 +811,7 @@ BEGIN
     
     SET total_factura_actual = (SELECT SUM(f.total_factura) FROM factura f
 								JOIN transporte t ON f.id_transporte=t.id_transporte
-								WHERE t.id_estacion_origen=id_estacion_actual);
+								WHERE t.id_estacion_origen=id_estacion_actual AND f.estado_factura="PAGA");
 	
     -- verificar que el resultado no sea null (complica la visualización)
 	IF total_factura_actual IS NOT NULL THEN
