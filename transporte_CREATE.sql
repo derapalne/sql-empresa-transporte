@@ -610,7 +610,7 @@ sp: BEGIN
 			SET origen_campo_actualizar = "pqt_esperando = pqt_esperando - 1, pqt_despachados = pqt_despachados + 1";
         END IF;
     END IF;
-    IF in_estado_paquete = "ESPERANDO RECEPCION" THEN
+    IF in_estado_paquete = "RECIBIDO" THEN
 		IF estado_anterior_paquete = "ESPERANDO TRANSPORTE" THEN
 			SET origen_campo_actualizar = "pqt_esperando = pqt_esperando - 1, pqt_despachados = pqt_despachados + 1";
         END IF;
@@ -620,7 +620,7 @@ sp: BEGIN
 		IF estado_anterior_paquete = "ESPERANDO TRANSPORTE" THEN
 			SET origen_campo_actualizar = "pqt_esperando = pqt_esperando - 1, pqt_despachados = pqt_despachados + 1";
         END IF;
-		IF estado_anterior_paquete = "ESPERANDO RECEPCION" THEN
+		IF estado_anterior_paquete = "RECIBIDO" THEN
 			SET destino_campo_actualizar = "pqt_recibidos = pqt_recibidos - 1, pqt_entregados = pqt_entregados + 1";
 		ELSE 
 			SET destino_campo_actualizar = "pqt_entregados = pqt_entregados + 1";
@@ -839,7 +839,7 @@ DELIMITER ;
 -- creacion de VISTAS
 
 -- toda la información de los paquetes no entregados
-CREATE OR REPLACE VIEW paquetes_no_entregado_view AS
+CREATE OR REPLACE VIEW paquetes_no_entregados_view AS
 	SELECT p.*, o.id_estacion as id_estacion_origen, 
 		   d.id_estacion as id_estacion_destino,
 		   f.fecha_carga, f.fecha_salida, f.fecha_llegada
@@ -895,9 +895,9 @@ CREATE OR REPLACE VIEW salidas_temprano_view AS
 -- usuarios con facturas sin pagar
 CREATE OR REPLACE VIEW usuarios_deudores_view AS
 	SELECT u.id_usuario , CONCAT(u.nombre_usuario, " ",u.apellido_usuario) as nombre_completo_usuario, 
-    f.id_factura, f.estado_factura, f.total_factura
+    f.id_factura, f.fecha_factura, f.total_factura
     FROM factura f JOIN usuario u ON f.id_usuario=u.id_usuario
-    WHERE f.estado_factura NOT LIKE "PAGA";
+    WHERE f.estado_factura LIKE "GENERADA";
     
 -- toda la info de todos los paquetes
 CREATE OR REPLACE VIEW paquetes_view AS
@@ -909,7 +909,6 @@ CREATE OR REPLACE VIEW paquetes_view AS
     JOIN fechas_paquete f ON f.id_paquete=p.id_paquete;
 
 -- calificaciones con nombre de usuario
-
 CREATE OR REPLACE VIEW calificaciones_view AS
 	SELECT c.puntuacion, c.comentario, c.fecha_calificacion,
 		   CONCAT(u.nombre_usuario, " ", u.apellido_usuario) as usuario,
