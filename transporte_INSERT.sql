@@ -295,6 +295,7 @@ CALL modificar_estado_paquete(20,"ENTREGADO",@response);
 CALL modificar_estado_paquete(21,"ENTREGADO",@response);
 CALL modificar_estado_paquete(22,"ENTREGADO",@response);
 CALL modificar_estado_paquete(23,"ENTREGADO",@response);
+
 -- SE AGREGAN LOS ATRIBUTOS FALTANTES A LOS PAQUETES
 -- id_paquete, id_usuario_receptor, id_transporte, id_factura, fecha_salida, fecha_llegada
 CALL agregar_datos_a_paquete(1, 4, 6, 0, '2023-11-16', '2023-11-19', @response);

@@ -839,6 +839,11 @@ BEGIN
     SELECT *, CONCAT(nombre_estacion, " - ", ciudad_estacion) as nombres_concatenados FROM ganancias_estaciones ORDER BY ganancias_origen;
 END$$
 
+--
+-- TODO: 
+-- 		CREAR SP QUE AGREGUE UN PAQUETE A UN TRANSPORTE
+-- 		AÑADIENDO FECHAS, COMPROBANDO QUE LAS ESTACIONES SEAN LAS MISMAS
+
 /*
 DROP PROCEDURE IF EXISTS ``$$
 CREATE PROCEDURE `` ()
